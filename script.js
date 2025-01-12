@@ -54,7 +54,7 @@ form.addEventListener('submit', function(event) {
                 dataFromServer.slice(0, 20).forEach(item => {
                     const liElement = document.createElement('li');
                     liElement.style.fontSize = '1rem';
-                    liElement.textContent = `api request nr. :" ${item.api_call} -  ${item.id}:  testované číslo :${item.number} data: ${item.title}`;
+                    liElement.textContent = `api request nr. : ${item.api_call} -  ${item.id}:  testované číslo :${item.number} data: ${item.title}`;
                     ulElement.appendChild(liElement);
                 });
             } catch (error) {
