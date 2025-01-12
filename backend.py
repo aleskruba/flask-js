@@ -9,7 +9,7 @@ CORS(app)
 request_count = {}
 
 # Define the request limit per day
-REQUEST_LIMIT = 3
+REQUEST_LIMIT = 5
 
 # Helper function to get today's date as a string
 def get_today_date():
