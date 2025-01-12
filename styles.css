@@ -168,7 +168,10 @@ footer {
     bottom: 0;    
 }
 
-
+#request_error{
+    color: red;
+    font-size: 1.5rem;
+}
 @media screen and (max-width: 600px) {
     main {
        flex-direction: column;

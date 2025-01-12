@@ -21,9 +21,11 @@ const form = document.getElementById('submitForm');
 let dataFromServer;
 form.addEventListener('submit', function(event) {
     event.preventDefault();
-    const phoneNumber = document.getElementById('phonenumber').value.trim();
+    let phoneNumber = document.getElementById('phonenumber').value.trim();
     const error = document.getElementById('error');
+    let request_error = document.getElementById('request_error');
 
+    
     if (phoneNumber === '') {
         error.style.opacity = 1; 
         return;
@@ -40,13 +42,20 @@ form.addEventListener('submit', function(event) {
                     body: JSON.stringify({ phoneNumber }) 
                 });
                 
+         
+                console.log(response)
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
                 
-          
+            
                 const dataFromServer = await response.json();
                 console.log(dataFromServer);
+
+                if (dataFromServer.error) {
+                    console.log(dataFromServer.error)
+                    request_error.innerHTML = dataFromServer.error
+                }
                 
                 const ulElement = document.querySelector('.response-section-ul');
                 
@@ -57,6 +66,8 @@ form.addEventListener('submit', function(event) {
                     liElement.textContent = `api request nr. : ${item.api_call} -  ${item.id}:  testované číslo :${item.number} data: ${item.title}`;
                     ulElement.appendChild(liElement);
                 });
+
+                document.getElementById('phonenumber').value = '';
             } catch (error) {
                 console.error('Error fetching data:', error);
             }

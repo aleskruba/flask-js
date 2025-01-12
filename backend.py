@@ -1,33 +1,52 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from datetime import datetime
+
 
 app = Flask(__name__)
 CORS(app)  
 
-api_call = 0
+request_count = {}
+
+# Define the request limit per day
+REQUEST_LIMIT = 3
+
+# Helper function to get today's date as a string
+def get_today_date():
+    return datetime.today().strftime('%Y-%m-%d')
 
 @app.route('/api/', methods=['POST'])
 def handle_post():
-    global api_call
-    
+    global request_count
+
+    # Get the current date
+    today_date = get_today_date()
+
+    # Retrieve data from the frontend
     data = request.get_json()
     phone_number = data.get('phoneNumber')
-    print("data z frontendu: ", phone_number)
+    print("Data from frontend:", phone_number)
 
-    
     if not phone_number:
-        return jsonify({"error": "Phone number is required"}), 400
-    
-    # tady  vytvoříš logic pro  telefoní čislo
+        return jsonify({"error": "Nesnmí být prázdné"})
+
+    # Check if the request count for today exceeds the limit
+    if today_date in request_count and request_count[today_date] >= REQUEST_LIMIT:
+        return jsonify({"error": f"Můžeš poslat pouze {REQUEST_LIMIT} requestů za den"})
+
+    # Increment the request count for today
+    if today_date in request_count:
+        request_count[today_date] += 1
+    else:
+        request_count[today_date] = 1
+
+    # Respond with the data
     response_data = [
-        
-        {"api_call":api_call,"id": 1, "number": phone_number,"title": "data ze souboru 1"},
-        {"api_call":api_call,"id": 2, "number": phone_number,"title": "data ze souboru 2"},
-        {"api_call":api_call,"id": 3, "number": phone_number,"title": "data ze souboru 3"}
+        {"api_call": request_count[today_date], "id": 1, "number": phone_number, "title": "data from file 1"},
+        {"api_call": request_count[today_date], "id": 2, "number": phone_number, "title": "data from file 2"},
+        {"api_call": request_count[today_date], "id": 3, "number": phone_number, "title": "data from file 3"}
     ]
-    api_call += 1
     
     return jsonify(response_data)
-
 if __name__ == '__main__':
     app.run(debug=True)
